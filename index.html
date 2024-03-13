@@ -3,10 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Основы Программирования</title>
+    <title>Blog </title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <script src="index.js"></script>
+    <section class="wrapper">
+        <form action="#" id="add-form" class="blog">
+            <h1>Новый пост</h1>
+            <input placeholder="Заголовок"  class="js-input-title input-title" type="text">
+            <textarea placeholder="Напиши пост" class="js-input-text input-text" type="text"></textarea>
+            <button disabled class="js-btn btn"> опубликовать</button>
+            <p id="validationMessage" class="validationMessage validationMessage_hidden" >  
+            </p>
+        </form>
+
+        <div class="post">
+            <h2>Лента</h2>
+            <div class="js-posts posts">
+            <p class="posted">Тут пока пусто...</p>
+            </div>
+        </div>
+    </section>
+
+<script src="index.js"></script>
 </body>
 </html>
