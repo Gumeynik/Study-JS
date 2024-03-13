@@ -11,7 +11,7 @@
 //     }
 // }
 // console.log(person.getFullName())
-// console.log(person.isAdult())
+// console.log(person)
 
 
 
@@ -59,28 +59,47 @@
 // console.log(calculateNumbersSum([-10, 1, 2, 4, 9]))
 
 
-function includes(numbers, number) {
-    numbers.forEach(function(item) {
-        numbers = number;
-        if (number === item) {
-            return numbers
-        } else if (number != item) {
-          return number;
-        }
-    });
-}
-console.log(includes([1, 2, 3, 5], 5))
-
 // function includes(numbers, number) {
-
-//         numbers.forEach(function (item) {
-//             if (number === item) {
-//             console.log('true')
-//         } else {
-//             console.log('false')
-//         }
+//     for (let i = 0; i < numbers.length; i++) {
+//         if (numbers[i] === number) {
+//             return true;
+//         } 
 //     }
-
-//     );
+//     return false;
 // }
-// includes([1, 2, 3], 3)
+
+// console.log(includes([1, 2, 3, 4, 5], 2));
+
+// function  createPerson(name, surname, age) {
+//     const person = {
+//         name: name,
+//         surname: surname,
+//         age: age,
+//     }
+//     return person;
+// }
+// console.log(createPerson('sawa', 'kubenko', 25))
+function createPerson(name, age) {
+    const person = {
+        name: name,
+        age: age,
+    }
+    return person
+}
+function findOldest(people) {
+    let oldestPerson = 0;
+    people.forEach(function (person, index) {
+        if (person.age > people[oldestPerson].age) {
+            oldestPerson = index;
+        }
+    }
+    );
+
+    return people[oldestPerson].name
+}
+const people = [
+    createPerson('Qnach', 320),
+    createPerson('Chromov', 65),
+    createPerson('Sitnikov', 55)
+];
+console.log(findOldest(people))
