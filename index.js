@@ -16,6 +16,9 @@ btnNode.addEventListener('click', function () {
     addPost(postFromUser);
 
     renderPosts();
+
+    inputTextNode.value = ' ';
+    inputTitleNode.value = ' ';
 });
 
 inputTitleNode.addEventListener('input', function(){
@@ -29,25 +32,43 @@ inputTextNode.addEventListener('input', function () {
 
 
 function validation() {
-    const titleLength = inputTitleNode.value.length;
-    const textLength = inputTextNode.value.length;
+    const title = inputTitleNode.value.trim();
+    const text = inputTextNode.value.trim();
+    const titleLength = title.length;
+    const textLength = text.length;
 
-     if (titleLength > titleLimit) {
-        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов превышен на ${titleLength - titleLimit} .`;
+    if (titleLength === 0) {
+        validationMessage.innerText = 'Заголовок не может быть пустым.';
         validationMessage.classList.remove('validationMessage_hidden');
-        btnNode.setAttribute('disabled', true)
-        return;
-    } if (textLength > textLimit) {
-        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов превышен на ${textLength - textLimit} .`;
-        validationMessage.classList.remove('validationMessage_hidden');
-        btnNode.setAttribute('disabled', true)
-        return;
-    } else {
-        validationMessage.classList.add('validationMessage_hidden');
-        btnNode.removeAttribute('disabled');
+        btnNode.setAttribute('disabled', true);
         return;
     }
+
+    if (textLength === 0) {
+        validationMessage.innerText = 'Пост не может быть пустым.';
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    }
+
+    if (titleLength > titleLimit) {
+        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов превышен на ${titleLength - titleLimit} .`;
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    }
+
+    if (textLength > textLimit) {
+        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов превышен на ${textLength - textLimit} .`;
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    }
+
+    validationMessage.classList.add('validationMessage_hidden');
+    btnNode.removeAttribute('disabled');
 }
+
 
 
 

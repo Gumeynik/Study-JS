@@ -65,10 +65,9 @@ margin-top: 0px;
 .post__text{
 width: 400px;
 font-size: 18px;
-height: 200px;
-overflow:auto;
+height: auto;
 border: none;
-resize: none;
+resize: both;
 margin-bottom: 10px;
 }
 .post__date{
