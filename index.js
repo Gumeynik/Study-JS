@@ -8,7 +8,7 @@ const inputTitleNode = document.querySelector('.js-input-title');
 const inputTextNode = document.querySelector('.js-input-text');
 const btnNode = document.querySelector('.js-btn');
 const postsNode = document.querySelector('.js-posts');
-const validationMessage = document.getElementById('validationMessage')
+const validationMessage = document.getElementById('validationMessage');
 
 btnNode.addEventListener('click', function () {
     const postFromUser = getPostFromUser();
@@ -19,6 +19,7 @@ btnNode.addEventListener('click', function () {
 
     inputTextNode.value = ' ';
     inputTitleNode.value = ' ';
+    validation();
 });
 
 inputTitleNode.addEventListener('input', function(){
@@ -30,36 +31,38 @@ inputTextNode.addEventListener('input', function () {
         validation();
 });
 
-
-function validation() {
+function getInputValue() {
     const title = inputTitleNode.value.trim();
     const text = inputTextNode.value.trim();
-    const titleLength = title.length;
-    const textLength = text.length;
+    return { title, text };
+}
 
-    if (titleLength === 0) {
+function validation() {
+    const { title, text } = getInputValue();
+
+    if (title.length === 0) {
         validationMessage.innerText = 'Заголовок не может быть пустым.';
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
     }
 
-    if (textLength === 0) {
+    if (text.length === 0) {
         validationMessage.innerText = 'Пост не может быть пустым.';
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
     }
 
-    if (titleLength > titleLimit) {
-        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов превышен на ${titleLength - titleLimit} .`;
+    if (title.length > titleLimit) {
+        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов заголовка превышен на ${titleLength - titleLimit} .`;
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
     }
 
-    if (textLength > textLimit) {
-        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов превышен на ${textLength - textLimit} .`;
+    if (text.length > textLimit) {
+        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов поста превышен на ${textLength - textLimit} .`;
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
@@ -73,8 +76,7 @@ function validation() {
 
 
 function getPostFromUser() {
-   const title = inputTitleNode.value;
-   const text = inputTextNode.value;
+    const { title, text } = getInputValue();
 
     return {
         title: title,
@@ -83,11 +85,10 @@ function getPostFromUser() {
 };
 
 function addPost({title, text}) {
-    const currentDate = getUserTime(new Date()); 
     posts.push({
      title,
      text,
-     date: currentDate,
+     date: getUserTime(new Date()),
     });
  }
 ;
@@ -106,7 +107,7 @@ function renderPosts() {
             <div class='post'>
                 <div class='post__date'>${post.date}</div>
                  <p class='post__title'>${post.title} </p>
-                <textarea class='post__text'>${post.text} </textarea>
+                <p class='post__text'>${post.text} </p>
             </div>
             `;
     });
