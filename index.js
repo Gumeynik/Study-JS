@@ -55,14 +55,14 @@ function validation() {
     }
 
     if (title.length > titleLimit) {
-        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов заголовка превышен на ${titleLength - titleLimit} .`;
+        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов заголовка превышен на ${title.length - titleLimit} .`;
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
     }
 
     if (text.length > textLimit) {
-        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов поста превышен на ${textLength - textLimit} .`;
+        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов поста превышен на ${text.length - textLimit} .`;
         validationMessage.classList.remove('validationMessage_hidden');
         btnNode.setAttribute('disabled', true);
         return;
