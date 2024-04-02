@@ -1,186 +1,123 @@
-const expenses = [];
-let LIMIT = 10000;
-const currency = 'руб.';
-const status_in_limit = 'всё хорошо';
-const status_out_of_limit = 'всё плохо';
+const posts = [];
+const date = getUserTime(new Date());
+const titleLimit = 100;
+const textLimit = 200;
 
-const inputNode = document.querySelector('.js-inp');
+
+const inputTitleNode = document.querySelector('.js-input-title');
+const inputTextNode = document.querySelector('.js-input-text');
 const btnNode = document.querySelector('.js-btn');
-const historyNode = document.querySelector('.js-history');
-const totalNode = document.querySelector('.js-total');
-const limitNode = document.querySelector('.js-limit');
-const statusNode = document.querySelector('.js-status');
-const btnResetNode = document.querySelector('.js-reset-btn');
-const btnPopupNode = document.querySelector('.js-icon');
-const popupNode = document.querySelector('.js-popup');
-const btnClosePopupNode = document.querySelector('.js-burger-btn');
-const popupInputNode = document.querySelector('.popup-input');
-const btnPopupInputNode = document.querySelector('.js-popup-btn');
-const categoryNode = document.querySelector('.category');
-const validation = document.querySelector('.category_validation');
-
-
-init(expenses);
-
+const postsNode = document.querySelector('.js-posts');
+const validationMessage = document.getElementById('validationMessage');
 
 btnNode.addEventListener('click', function () {
-   const expense = getExpenseFromUser();
+    const postFromUser = getPostFromUser();
 
-   if (!expense) {
-    validation.setAttribute("style", "color: red;")
-    validation.innerText = `Запишите расходы`;
-    return;
-   }
-    else {
-        validation.setAttribute("style", "color: white;")
-   }
-   if (categoryNode.value === ''){
-    validation.setAttribute("style", "color: red;")
-    validation.innerText = `Выберите категорию`;
-    return;
-   }
-   else {
-    validation.setAttribute("style", "color: white;")
-}
-   trackExpense(expense);
-   render(expenses);
+    addPost(postFromUser);
+
+    renderPosts();
+
+    inputTextNode.value = ' ';
+    inputTitleNode.value = ' ';
+    validation();
 });
 
-function init() {
-    limitNode.innerText = `${LIMIT} ${currency}`;
-    statusNode.innerText = status_in_limit;
-    totalNode.innerText = ` ${calculateExpanses(expenses)}  ${currency}`;
-};
-
-localStorage.setItem('limit', popupInputNode.value)
-
-function trackExpense(expense) {
-    const category = categoryNode.options[categoryNode.selectedIndex].text;
-    expenses.push({ amount: expense, category: category });
-};
-
-function getExpenseFromUser() {
-    if (inputNode.value === '' ) {
-        return null;
-    }
-    // if (categoryNode.value === '') {
-    //     return null;
-    // }
-    const expense = parseInt(inputNode.value);
-
-    clearInput();
-
-    return expense;
-};
-
-function clearInput() {
-    inputNode.value = '';
-    popupInputNode.value = '';
-
-};
-
-function calculateExpanses(expenses) {
-    let sum = 0;
-
-    expenses.forEach(element => {
-        sum += element.amount;
-    });
-
-    return sum;
-};
-
-function render(expenses) {
-    const sum = calculateExpanses(expenses);
-    init();  
-    renderSum(sum);
-    renderHistory(expenses);
- 
-    renderStatus(sum);
+inputTitleNode.addEventListener('input', function(){
+    validation();
 }
+);
 
-function renderHistory(expenses) {
-    let expensesListHTML = '';
-
-    expenses.forEach(expense => {
-        expensesListHTML += `<li>${expense.amount} ${currency} - ${expense.category}</li>`;
-    });
-
-    historyNode.innerHTML = `<ol class='history-list'>${expensesListHTML}</ol> `;
-};
-
-function renderSum(sum) {
-    totalNode.innerText = `${sum} ${currency}`;
-}
-
-function renderStatus(sum) {
-    if (LIMIT >= sum) {
-        statusNode.innerText = `${status_in_limit}`;
-        statusNode.setAttribute("style", "color: green;")
-    } else {
-        statusNode.innerText = `${status_out_of_limit} (-${sum - LIMIT})`;
-        statusNode.setAttribute("style", "color: red;")
-    }
-};
-
-
-btnResetNode.addEventListener('click', function () {
-    expenses.length = 0;
-    
-    render(expenses);
- });
-
- btnPopupNode.addEventListener('click', function () {
-    popupNode.classList.add('popup-open');
- });
-
- btnClosePopupNode.addEventListener('click', function () {
-    popupNode.classList.remove('popup-open');
- });
-
- btnPopupInputNode.addEventListener('click', function () {
-    LIMIT = popupInputNode.value;
-    popupNode.classList.remove('popup-open');
-    render(expenses); 
-    clearInput();
+inputTextNode.addEventListener('input', function () {
+        validation();
 });
 
+function getInputValue() {
+    const title = inputTitleNode.value.trim();
+    const text = inputTextNode.value.trim();
+    return { title, text };
+}
+
+function validation() {
+    const { title, text } = getInputValue();
+
+    if (title.length === 0) {
+        validationMessage.innerText = 'Заголовок не может быть пустым.';
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    } else if (text.length === 0) {
+        validationMessage.innerText = 'Пост не может быть пустым.';
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    } else if (title.length > titleLimit) {
+        validationMessage.innerText = `Максимум символов ${titleLimit}. Лимит символов заголовка превышен на ${title.length - titleLimit} .`;
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    } else if (text.length > textLimit) {
+        validationMessage.innerText = `Максимум символов ${textLimit}. Лимит символов поста превышен на ${text.length - textLimit} .`;
+        validationMessage.classList.remove('validationMessage_hidden');
+        btnNode.setAttribute('disabled', true);
+        return;
+    }
+
+    validationMessage.classList.add('validationMessage_hidden');
+    btnNode.removeAttribute('disabled');
+}
 
 
 
 
+function getPostFromUser() {
+    const { title, text } = getInputValue();
+
+    return {
+        title: title,
+        text: text,
+    };
+};
+
+function addPost({title, text}) {
+    posts.push({
+     title,
+     text,
+     date: getUserTime(new Date()),
+    });
+ }
+;
+
+function getPosts() {
+    return posts;
+}
+
+function renderPosts() {
+    const posts = getPosts();
+
+    let postsHTML = '';
+
+    posts.forEach(post => {
+        postsHTML += `
+            <div class='post'>
+                <div class='post__date'>${post.date}</div>
+                 <p class='post__title'>${post.title} </p>
+                <p class='post__text'>${post.text} </p>
+            </div>
+            `;
+    });
+
+    postsNode.innerHTML = postsHTML; 
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-// const POPUP_OPENED_CLASSNAME = 'popup_open';
-// const BODY_FIXED_CLASSNAME = 'body_fixed';
-
-// const bodyNode = document.querySelector('body');
-// const popupNode = document.querySelector('.js-popup');
-// const btnLimitNode = document.querySelector('.js-icon')
-// const popupContentNode = document.querySelector('.js-popup-content')
-
-// btnLimitNode.addEventListener('click', togglePopup);
-// btnCloseNode.addEventListener('click', togglePopup);
-
-// popupNode.addEventListener('click', (event) => {
-//     const isClickOutsideContent = !event.composedPath().includes(popupContentNode)
-
-//     if (isClickOutsideContent) {
-//         togglePopup();
-//     }
-// })
-
-// function togglePopup() {
-//     popupNode.classList.toggle(POPUP_OPENED_CLASSNAME);
-//     bodyNode.classList.toggle(BODY_FIXED_CLASSNAME);
-// }
+function addLeadingZero(d) {
+  return ( d < 10) ? '0' + d : d;
+}
+function getUserTime(t) {
+    let Y = t.getFullYear();
+    let M = addLeadingZero(t.getMonth() + 1);
+    let D = addLeadingZero(t.getDate());
+    let H = addLeadingZero(t.getHours());
+    let m = addLeadingZero(t.getMinutes());
+    return `${D}.${M}.${Y} ${H}:${m}` 
+}
